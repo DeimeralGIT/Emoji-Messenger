@@ -1,4 +1,6 @@
+import 'package:emoji_messenger/card.dart';
 import 'package:emoji_messenger/keyToEmoji.dart';
+import 'package:emoji_messenger/section_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -43,7 +45,9 @@ class _MyHomePageState extends State<MyHomePage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => setState(() {
         initialSize = MediaQuery.of(context).size.width / 2.3;
-        initialposition = (MediaQuery.of(context).size.height - MediaQuery.of(context).size.width / 1.5) / 2;
+        initialposition = (MediaQuery.of(context).size.height -
+                MediaQuery.of(context).size.width / 1.5) /
+            2;
       }),
     );
     super.initState();
@@ -88,7 +92,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: AnimatedSize(
                             duration: const Duration(milliseconds: 2000),
                             curve: Curves.easeInOut,
-                            child: KeyToEmoji("1F604.svg"),
+                            child: SvgPicture.asset(
+                              'assets/emojis/1F604.svg',
+                              width: initialSize,
+                              height: initialSize,
+                            ),
                           ),
                         ),
                       ],
@@ -98,59 +106,40 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             : Center(
                 child: Transform(
-                  transform: Matrix4.rotationZ(-0.5),
+                  transform: Matrix4.rotationZ(-0.3),
                   alignment: Alignment.center,
-                  child: Container(
-                    padding: const EdgeInsets.all(7),
-                    height: screenWidth / 2.5,
-                    width: screenWidth / 1.3,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
+                  child: CardItem(
+                    height: screenWidth / 2.4,
+                    width: screenWidth / 1.2,
                     child: Row(
                       children: [
                         Expanded(
-                          flex: 2,
-                          child: Container(
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: KeyToEmoji("1F9D1"),
+                          flex: 3,
+                          child: SectionContainer(
+                            color: Colors.blue,
+                            child: KeyToEmoji(name: "1F9D1", isExpanded: true),
                           ),
                         ),
                         const SizedBox(width: 7),
                         Expanded(
-                          flex: 3,
+                          flex: 5,
                           child: Column(
                             children: [
                               Expanded(
-                                flex: 1,
-                                child: Container(
-                                  padding: const EdgeInsets.all(5),
-                                  width: double.infinity,
+                                flex: 3,
+                                child: SectionContainer(
                                   alignment: Alignment.centerLeft,
-                                  decoration: BoxDecoration(
-                                    color: Colors.yellow,
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: KeyToEmoji("E147.svg"),
+                                  color: Colors.yellow,
+                                  child: KeyToEmoji(name: "E147"),
                                 ),
                               ),
                               const SizedBox(height: 7),
                               Expanded(
-                                flex: 3,
-                                child: Container(
-                                  padding: const EdgeInsets.all(5),
-                                  width: double.infinity,
+                                flex: 7,
+                                child: SectionContainer(
                                   alignment: Alignment.topLeft,
-                                  decoration: BoxDecoration(
-                                    color: Colors.orange,
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: KeyToEmoji("E267.svg"),
+                                  color: Colors.orange,
+                                  child: KeyToEmoji(name: "E267"),
                                 ),
                               ),
                             ],

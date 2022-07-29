@@ -28,3 +28,4 @@ flutter:
 
   assets:
     - assets/emojis/
+    - assets/emoji_map.json

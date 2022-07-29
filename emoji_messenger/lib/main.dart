@@ -1,6 +1,8 @@
 import 'package:emoji_messenger/card.dart';
 import 'package:emoji_messenger/keyToEmoji.dart';
+import 'package:emoji_messenger/keyboard_parser.dart';
 import 'package:emoji_messenger/section_container.dart';
+import 'package:emoji_messenger/soft_keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -11,11 +13,15 @@ void main() {
 late double screenHeight;
 late double screenWidth;
 late double textEmojiSide;
+GlobalKey softKeyboardKey = GlobalKey();
+bool isKeyboardExpanded = false;
+Map<String, String> emojiList = {};
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    readJson().then(((value) => emojiList = value));
     return MaterialApp(
       title: 'Emoji_Messenger',
       theme: ThemeData(primarySwatch: Colors.green),
@@ -58,98 +64,120 @@ class _MyHomePageState extends State<MyHomePage> {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     textEmojiSide = screenWidth / 15;
-    return Scaffold(
-      backgroundColor: Colors.green,
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 500),
-        child: !isLanding
-            ? Stack(
-                alignment: Alignment.center,
-                children: [
-                  AnimatedPositioned(
-                    bottom: initialposition,
-                    duration: const Duration(milliseconds: 2000),
-                    curve: Curves.easeInOut,
-                    onEnd: () => setState(() {
-                      isLanding = true;
-                    }),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: AnimatedSize(
-                            duration: const Duration(milliseconds: 2000),
-                            curve: Curves.easeInOut,
-                            child: SvgPicture.asset(
-                              'assets/emojis/1F44B.svg',
-                              width: initialSize,
-                              height: initialSize,
-                            ),
-                          ),
-                        ),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: AnimatedSize(
-                            duration: const Duration(milliseconds: 2000),
-                            curve: Curves.easeInOut,
-                            child: SvgPicture.asset(
-                              'assets/emojis/1F604.svg',
-                              width: initialSize,
-                              height: initialSize,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            : Center(
-                child: Transform(
-                  transform: Matrix4.rotationZ(-0.3),
+    return GestureDetector(
+      onTap: () {
+        softKeyboardKey.currentState!.setState(() {
+          isKeyboardExpanded = false;
+        });
+      },
+      child: Scaffold(
+        backgroundColor: Colors.green,
+        body: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: !isLanding
+              ? Stack(
+                  key: const ValueKey("dhjgwkilhkuegku"),
                   alignment: Alignment.center,
-                  child: CardItem(
-                    height: screenWidth / 2.4,
-                    width: screenWidth / 1.2,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: SectionContainer(
-                            color: Colors.blue,
-                            child: KeyToEmoji(name: "1F9D1", isExpanded: true),
+                  children: [
+                    AnimatedPositioned(
+                      bottom: initialposition,
+                      duration: const Duration(milliseconds: 2000),
+                      curve: Curves.easeInOut,
+                      onEnd: () => setState(() {
+                        isLanding = true;
+                      }),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: AnimatedSize(
+                              duration: const Duration(milliseconds: 2000),
+                              curve: Curves.easeInOut,
+                              child: SvgPicture.asset(
+                                'assets/emojis/1F44B.svg',
+                                width: initialSize,
+                                height: initialSize,
+                              ),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 7),
-                        Expanded(
-                          flex: 5,
-                          child: Column(
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: AnimatedSize(
+                              duration: const Duration(milliseconds: 2000),
+                              curve: Curves.easeInOut,
+                              child: SvgPicture.asset(
+                                'assets/emojis/1F604.svg',
+                                width: initialSize,
+                                height: initialSize,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Stack(
+                  key: const ValueKey("afghasdgdwj"),
+                  children: [
+                    Center(
+                      child: Transform(
+                        transform: Matrix4.rotationZ(-0.3),
+                        alignment: Alignment.center,
+                        child: CardItem(
+                          height: screenWidth / 2.4,
+                          width: screenWidth / 1.2,
+                          child: Row(
                             children: [
                               Expanded(
                                 flex: 3,
                                 child: SectionContainer(
-                                  alignment: Alignment.centerLeft,
-                                  color: Colors.yellow,
-                                  child: KeyToEmoji(name: "E147"),
+                                  onTap: () => softKeyboardKey.currentState!
+                                      .setState(() {
+                                    isKeyboardExpanded = true;
+                                  }),
+                                  color: Colors.blue,
+                                  child: KeyToEmoji(
+                                      name: "1F9D1", isExpanded: true),
                                 ),
                               ),
-                              const SizedBox(height: 7),
+                              const SizedBox(width: 7),
                               Expanded(
-                                flex: 7,
-                                child: SectionContainer(
-                                  alignment: Alignment.topLeft,
-                                  color: Colors.orange,
-                                  child: KeyToEmoji(name: "E267"),
+                                flex: 5,
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: SectionContainer(
+                                        alignment: Alignment.centerLeft,
+                                        color: Colors.yellow,
+                                        child: KeyToEmoji(name: "E147"),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 7),
+                                    Expanded(
+                                      flex: 7,
+                                      child: SectionContainer(
+                                        alignment: Alignment.topLeft,
+                                        color: Colors.orange,
+                                        child: KeyToEmoji(name: "E267"),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    Positioned(
+                      bottom: 0,
+                      child: SoftKeyboard(),
+                    ),
+                  ],
                 ),
-              ),
+        ),
       ),
     );
   }

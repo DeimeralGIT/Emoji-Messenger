@@ -1,6 +1,5 @@
 import 'package:emoji_messenger/card.dart';
 import 'package:emoji_messenger/keyToEmoji.dart';
-import 'package:emoji_messenger/keyboard_parser.dart';
 import 'package:emoji_messenger/section_container.dart';
 import 'package:emoji_messenger/soft_keyboard.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +12,15 @@ void main() {
 late double screenHeight;
 late double screenWidth;
 late double textEmojiSide;
+String userAvatar = "1F9D1";
 GlobalKey softKeyboardKey = GlobalKey();
 bool isKeyboardExpanded = false;
-Map<String, String> emojiList = {};
+Function(String)? onEmojiPressed;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    readJson().then(((value) => emojiList = value));
     return MaterialApp(
       title: 'Emoji_Messenger',
       theme: ThemeData(primarySwatch: Colors.green),
@@ -51,9 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => setState(() {
         initialSize = MediaQuery.of(context).size.width / 2.3;
-        initialposition = (MediaQuery.of(context).size.height -
-                MediaQuery.of(context).size.width / 1.5) /
-            2;
+        initialposition = (MediaQuery.of(context).size.height - MediaQuery.of(context).size.width / 1.5) / 2;
       }),
     );
     super.initState();
@@ -63,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
-    textEmojiSide = screenWidth / 15;
+    textEmojiSide = screenWidth / 10;
     return GestureDetector(
       onTap: () {
         softKeyboardKey.currentState!.setState(() {
@@ -125,20 +122,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         transform: Matrix4.rotationZ(-0.3),
                         alignment: Alignment.center,
                         child: CardItem(
-                          height: screenWidth / 2.4,
-                          width: screenWidth / 1.2,
+                          height: screenWidth / 1.8,
+                          width: screenWidth,
                           child: Row(
                             children: [
                               Expanded(
                                 flex: 3,
                                 child: SectionContainer(
-                                  onTap: () => softKeyboardKey.currentState!
-                                      .setState(() {
+                                  onTap: () => softKeyboardKey.currentState!.setState(() {
                                     isKeyboardExpanded = true;
+                                    onEmojiPressed = (name) {
+                                      setState(() {
+                                        userAvatar = name;
+                                      });
+                                    };
                                   }),
                                   color: Colors.blue,
-                                  child: KeyToEmoji(
-                                      name: "1F9D1", isExpanded: true),
+                                  child: KeyToEmoji(name: userAvatar, isExpanded: true),
                                 ),
                               ),
                               const SizedBox(width: 7),
